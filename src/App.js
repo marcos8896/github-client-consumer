@@ -29,7 +29,6 @@ class App extends Component {
 
 
   async getRepositoriesByQuery( query ) {
-    
     const url = 'search/repositories';
 
     try {
@@ -38,7 +37,7 @@ class App extends Component {
           q: query,
           order: 'desc'
         }})
-        
+      
         this.setState({ repositories:response.data.items });
         
     } catch ( err ) {
@@ -52,7 +51,7 @@ class App extends Component {
       <div className="App">
         <SearchBar query={this.state.query} onChange={this.handleInputChange}/>
         <Divider/>
-        <Repositories/>
+        <Repositories repos={this.state.repositories}/>
       </div>
     );
   }
