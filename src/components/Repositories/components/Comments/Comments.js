@@ -24,7 +24,7 @@ const Comments = ({ items }) => {
           secondary={
             <React.Fragment>
               <span className="commit-id">
-                {`Commit: ${comment.commit_id}`}
+                {`${comment.user.login} - Commit: ${comment.commit_id}`}
               </span>
               <Typography component="span" className="inline-comments" color="textPrimary">
                 {comment.body}
