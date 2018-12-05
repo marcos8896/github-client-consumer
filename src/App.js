@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Divider from '@material-ui/core/Divider';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import './App.scss';
 
 import Repositories from './components/Repositories/Repositories';
@@ -15,6 +16,7 @@ class App extends Component {
     super( props );
     this.state = {
       repositories: [],
+      loadingRepos: false,
     }
 
     this.getRepositoriesByQuery = debounce( this.getRepositoriesByQuery.bind(this), 800);
@@ -41,6 +43,8 @@ class App extends Component {
 
 
   async getRepositoriesByQuery( query ) {
+
+    this.setState({ loadingRepos: true })
     
     const url = 'search/repositories';
 
@@ -55,7 +59,7 @@ class App extends Component {
         const repos = response.data.items;
         repos.forEach( repo => repo.commentsFetched = false);
       
-        this.setState({ repositories: repos });
+        this.setState({ repositories: repos, loadingRepos: false });
           
       } catch ( err ) {
         console.error('err: ', err);
@@ -101,6 +105,7 @@ class App extends Component {
     return (
       <div className="App">
         <SearchBar query={this.state.query} onChange={this.handleInputChange}/>
+        {this.state.loadingRepos ? <LinearProgress /> : null}
         <Divider/>
         <Repositories 
           onClickRepo={this.handleClickRepo}
