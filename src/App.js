@@ -14,24 +14,31 @@ class App extends Component {
     super( props );
 
     this.state = {
+      query: '',
       repositories: [],
       currentComments: [],
     }
 
-    this.getRepositoriesByQuery = debounce( this.getRepositoriesByQuery.bind(this), 500)
+    this.getRepositoriesByQuery = debounce( this.getRepositoriesByQuery.bind(this), 500);
 
   }
 
-  async getRepositoriesByQuery( query ) {
+  handleChange = ( event ) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    this.setState({ [name]: value });
+  }
 
-    console.log("search query");
-    
+
+  async getRepositoriesByQuery() {
+
     //https://api.github.com/search/repositories?q=react&order=desc
     // const url = 'search/repositories';
 
     // const response = await axios.get( url, {
     //   params: {
-    //     q: query
+    //     q: query,
+    //     order: 'desc'
     //   }
     // }).catch( err => console.err(err));
 
@@ -42,7 +49,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <SearchBar onChangeQuery={this.getRepositoriesByQuery}/>
+        <SearchBar query={this.state.query} onChange={this.handleChange}/>
         <Divider/>
         <Repositories/>
       </div>
