@@ -27,6 +27,17 @@ class App extends Component {
     this.getRepositoriesByQuery(value);
   }
 
+  handleClickRepo = ( repoId ) => () => {
+
+    this.setState( prevState => ({
+      repositories: prevState.repositories.map( repo => {
+        if (repo.id === repoId) return { ...repo, open: !repo.open }
+        else return repo;
+      })
+    }))
+    
+  }
+
 
   async getRepositoriesByQuery( query ) {
     
@@ -39,8 +50,11 @@ class App extends Component {
           q: query,
           order: 'desc'
         }});
+
+        const repos = response.data.items;
+        repos.forEach( repo => repo.open === false );
       
-        this.setState({ repositories:response.data.items });
+        this.setState({ repositories: repos });
           
       } catch ( err ) {
         console.error('err: ', err);
@@ -54,7 +68,7 @@ class App extends Component {
       <div className="App">
         <SearchBar query={this.state.query} onChange={this.handleInputChange}/>
         <Divider/>
-        <Repositories repos={this.state.repositories}/>
+        <Repositories onClickRepo={this.handleClickRepo} repos={this.state.repositories}/>
       </div>
     );
   }

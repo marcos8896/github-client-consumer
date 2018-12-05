@@ -7,20 +7,33 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import ArrowRight from '@material-ui/icons/ArrowRight';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import './Repositories.scss';
 
-const SimpleList = ({ repos }) => {
+const SimpleList = ({ repos, onClickRepo }) => {
 
   const listItems = repos.map( repo => {
     return (
       <li key={`${repo.name}-${repo.id}`}>
-        <ListItem button>
+        <ListItem button onClick={onClickRepo(repo.id)}>
           <ListItemIcon>
             <ArrowRight />
           </ListItemIcon>
-          <ListItemText primary={repo.full_name} />
+          <ListItemText inset primary={repo.full_name} />
+          {repo.open ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
+        <Collapse in={repo.open} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem button>
+              {/* <ListItemIcon>
+              </ListItemIcon> */}
+              <ListItemText inset primary="Test" />
+            </ListItem>
+          </List>
+        </Collapse>
         <Divider/>
       </li>
       
@@ -41,6 +54,7 @@ const SimpleList = ({ repos }) => {
 
 SimpleList.propTypes = {
   repos: PropTypes.array.isRequired,
+  onClickRepo: PropTypes.func.isRequired,
 };
 
 
