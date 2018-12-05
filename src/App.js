@@ -11,8 +11,8 @@ import axios from './axios';
 class App extends Component {
 
   constructor( props ) {
-    super( props );
 
+    super( props );
     this.state = {
       query: '',
       repositories: [],
@@ -20,8 +20,13 @@ class App extends Component {
     }
 
     this.getRepositoriesByQuery = debounce( this.getRepositoriesByQuery.bind(this), 500);
-
   }
+
+
+  componentDidUpdate( prevProps ) {
+    if(prevProps.query !== this.state.query) this.getRepositoriesByQuery();
+  }
+
 
   handleChange = ( event ) => {
     const name = event.target.name;
@@ -31,7 +36,6 @@ class App extends Component {
 
 
   async getRepositoriesByQuery() {
-
     //https://api.github.com/search/repositories?q=react&order=desc
     // const url = 'search/repositories';
 
