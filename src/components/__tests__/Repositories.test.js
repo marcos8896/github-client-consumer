@@ -3,7 +3,7 @@ import { render, waitForElement, fireEvent } from 'react-testing-library';
 
 import mockAxios from 'axios';
 
-import Repositories from '../Repositories';
+import Repositories from '../Repositories/Repositories';
 import repositoriesData from './testRepositoriesData.json';
 import testCommentsData from './testCommentsData.json';
 
