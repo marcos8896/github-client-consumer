@@ -3,7 +3,8 @@ import { render, waitForElement, fireEvent } from 'react-testing-library';
 
 import mockAxios from 'axios';
 
-import Repositories from '../Repositories/Repositories';
+import App from '../App';
+
 import repositoriesData from './testRepositoriesData.json';
 import testCommentsData from './testCommentsData.json';
 
@@ -17,8 +18,8 @@ const setup = () => {
 
 it('should render a search input', () => {
 
-  const { getByLabelText } = render(<Repositories/>);
-  expect( getByLabelText('Search repositories:') ).toBeInTheDocument();
+  const { getByLabelText } = render(<App/>);
+  expect( getByLabelText('Search repositories') ).toBeInTheDocument();
 
 });
 
@@ -30,7 +31,7 @@ it('should render a list with several repositories', async () => {
     repositories
   ));
 
-  const { getByText } = render(<Repositories/>);
+  const { getByText } = render(<App/>);
 
   await waitForElement( () => getByText( 'freeCodeCamp' ) );
 
@@ -47,7 +48,7 @@ it("should show the repo's comments when clicking on one of them", async () => {
     repositories
   ));
 
-  const { getByTestId, getByText } = render(<Repositories/>);
+  const { getByTestId, getByText } = render(<App/>);
   
   await waitForElement( () => getByText( 'react' ) );
 
