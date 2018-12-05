@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitForElement, fireEvent } from 'react-testing-library';
+import { render, waitForElement, fireEvent, wait } from 'react-testing-library';
 
 import mockAxios from 'axios';
 
@@ -24,7 +24,7 @@ it('should render a search input', () => {
 });
 
 
-it('should render a list with several repositories', async () => {
+it('should render a list with several repositories when searching', async () => {
 
   const { repositories } = setup();
   mockAxios.__mock.instance.get.mockImplementationOnce( () => Promise.resolve({
@@ -34,13 +34,11 @@ it('should render a list with several repositories', async () => {
   }));
 
   const { getByText, getByLabelText } = render(<App/>);
-  
   const searchNode = getByLabelText('Search repositories');
-  
   fireEvent.change( searchNode, { target: { value: 'react' } });
-
   await waitForElement( () => getByText( 'freeCodeCamp/freeCodeCamp' ) );
 
+  
   expect( getByText( 'freeCodeCamp/freeCodeCamp' ) ).toBeInTheDocument();
   expect( getByText( 'facebook/react' ) ).toBeInTheDocument();
 
@@ -49,26 +47,28 @@ it('should render a list with several repositories', async () => {
 it("should show the repo's comments when clicking on one of them", async () => {
 
   const { repositories, comments } = setup();
-  //Mock repo's http request
-  mockAxios.__mock.instance.get.mockImplementationOnce( () => Promise.resolve(
-    repositories
-  ));
-
-  const { getByTestId, getByText } = render(<App/>);
-  
-  await waitForElement( () => getByText( 'react' ) );
-
-
-  //Mock comments' http request
   mockAxios.__mock.instance.get.mockImplementationOnce( () => Promise.resolve({
-    comments
+    data: {
+      items: repositories
+    }
   }));
 
-  const clickableNode = getByTestId( 'selectable-repo-react-10270250' );
+  const { getByText, getByLabelText, getByTestId } = render(<App/>);
+  const searchNode = getByLabelText('Search repositories');
+  fireEvent.change( searchNode, { target: { value: 'react' } });
+  await waitForElement( () => getByText( 'freeCodeCamp/freeCodeCamp' ) );
+
+  mockAxios.__mock.instance.get.mockImplementationOnce( () => Promise.resolve({
+    data: comments
+  }));
+
+  const clickableNode = getByTestId( 'selectable-repo-freeCodeCamp-28457823' );
   fireEvent.click( clickableNode );
 
-  expect(
-    getByText(`Shouldn't clearInterval be defined somewhere in this example?\n`)
+  await waitForElement( () => getByText(`This was actually needed.`, { exact: false }));
+
+  expect( 
+    getByText(`This was actually needed. If you don't do that`, { exact: false })
   ).toBeInTheDocument();
 
 });

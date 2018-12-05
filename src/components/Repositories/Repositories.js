@@ -19,7 +19,11 @@ const Repositories = ({ repos, onClickRepo }) => {
 
   const listItems = repos.map(repo => (
     <div key={`${repo.name}-${repo.id}`}>
-      <ListItem button onClick={onClickRepo(repo.full_name, repo.id)}>
+      <ListItem 
+        button 
+        onClick={onClickRepo(repo.full_name, repo.id)}
+        data-testid={`selectable-repo-${repo.name}-${repo.id}`}
+      >
         <ListItemIcon>
           <ArrowRight />
         </ListItemIcon>
