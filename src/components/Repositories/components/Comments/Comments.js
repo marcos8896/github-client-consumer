@@ -12,7 +12,7 @@ import './Comments.scss';
 
 const Comments = ({ items }) => {
 
-  let commentElements = null;
+  let commentElements = null, message = null;
 
   if( items !== undefined )
     commentElements = items.map(comment => (
@@ -35,9 +35,17 @@ const Comments = ({ items }) => {
       </ListItem>
     ))
 
+  if( items !== undefined && items.length === 0 )
+    message = (
+      <div className="no-comments-message">
+        {"There aren't comments available for this repository :("}
+      </div>
+    )
+
   return (
     <List component="div" disablePadding>
       {commentElements}
+      {message}
     </List>
   );
 }

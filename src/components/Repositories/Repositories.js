@@ -17,32 +17,26 @@ import './Repositories.scss';
 
 const Repositories = ({ repos, onClickRepo }) => {
 
-  const listItems = repos.map( repo => {
-    return (
-      <div key={`${repo.name}-${repo.id}`}>
-        <ListItem button onClick={onClickRepo(repo.full_name, repo.id)}>
-          <ListItemIcon>
-            <ArrowRight />
-          </ListItemIcon>
-          <ListItemText inset primary={repo.full_name} />
-          {repo.open ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-        <Collapse in={repo.open} timeout="auto" unmountOnExit>
-          <Comments items={repo.comments}/>
-        </Collapse>
-        <Divider/>
-      </div>
-      
-    )
-  });
+  const listItems = repos.map(repo => (
+    <div key={`${repo.name}-${repo.id}`}>
+      <ListItem button onClick={onClickRepo(repo.full_name, repo.id)}>
+        <ListItemIcon>
+          <ArrowRight />
+        </ListItemIcon>
+        <ListItemText inset primary={repo.full_name} />
+        {repo.open ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={repo.open} timeout="auto" unmountOnExit>
+        <Comments items={repo.comments} />
+      </Collapse>
+      <Divider />
+    </div>
+  ));
 
   return (
     <div className="repositories-root">
       <List component="ul">
-
         {listItems}
-
-
       </List>
     </div>
   );
