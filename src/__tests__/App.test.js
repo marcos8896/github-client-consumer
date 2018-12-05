@@ -27,16 +27,22 @@ it('should render a search input', () => {
 it('should render a list with several repositories', async () => {
 
   const { repositories } = setup();
-  mockAxios.__mock.instance.get.mockImplementationOnce( () => Promise.resolve(
-    repositories
-  ));
+  mockAxios.__mock.instance.get.mockImplementationOnce( () => Promise.resolve({
+    data: {
+      items: repositories
+    }
+  }));
 
-  const { getByText } = render(<App/>);
+  const { getByText, getByLabelText } = render(<App/>);
+  
+  const searchNode = getByLabelText('Search repositories');
+  
+  fireEvent.change( searchNode, { target: { value: 'react' } });
 
-  await waitForElement( () => getByText( 'freeCodeCamp' ) );
+  await waitForElement( () => getByText( 'freeCodeCamp/freeCodeCamp' ) );
 
-  expect( getByText( 'freeCodeCamp' ) ).toBeInTheDocument();
-  expect( getByText( 'react' ) ).toBeInTheDocument();
+  expect( getByText( 'freeCodeCamp/freeCodeCamp' ) ).toBeInTheDocument();
+  expect( getByText( 'facebook/react' ) ).toBeInTheDocument();
 
 });
 
