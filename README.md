@@ -24,3 +24,9 @@ Run the following command on the terminal to execute the tests
 ```
 $ npm test
 ```
+
+#### Production build
+Run the following command on the terminal to execute the build process
+```
+$ npm run build
+```
