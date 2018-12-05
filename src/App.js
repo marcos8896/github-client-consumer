@@ -15,10 +15,10 @@ class App extends Component {
     super( props );
     this.state = {
       repositories: [],
-      currentComments: [],
     }
 
     this.getRepositoriesByQuery = debounce( this.getRepositoriesByQuery.bind(this), 800);
+    this.getCommentsFromRepo = this.getCommentsFromRepo.bind(this);
   }
 
 
@@ -27,15 +27,16 @@ class App extends Component {
     this.getRepositoriesByQuery(value);
   }
 
-  handleClickRepo = ( repoId ) => () => {
+
+  handleClickRepo = ( fullRepoName, repoId ) => () => {
 
     this.setState( prevState => ({
       repositories: prevState.repositories.map( repo => {
         if (repo.id === repoId) return { ...repo, open: !repo.open }
         else return repo;
       })
-    }))
-    
+    }),
+    () => this.getCommentsFromRepo(fullRepoName, repoId));
   }
 
 
@@ -52,7 +53,7 @@ class App extends Component {
         }});
 
         const repos = response.data.items;
-        repos.forEach( repo => repo.open === false );
+        repos.forEach( repo => repo.commentsFetched = false);
       
         this.setState({ repositories: repos });
           
@@ -63,12 +64,48 @@ class App extends Component {
 
   }
 
+  async getCommentsFromRepo( fullRepoName, repoId ) {
+
+    if(!this.alreadyFetchComments( repoId )) {
+      const url = `/repos/${fullRepoName}/comments`;
+
+      try {
+
+        const response = await axios.get( url );
+        const comments = response.data;
+      
+        this.setState( prevState => ({
+          repositories: prevState.repositories.map( repo => {
+            if (repo.id === repoId) return { 
+              ...repo, comments: comments.reverse(), commentsFetched: true 
+            }
+            else return repo;
+          })
+        }));
+          
+      } catch ( err ) {
+        console.error('err: ', err);
+      }
+    }
+
+  }
+
+  alreadyFetchComments = repoId => {
+    const index = this.state.repositories.findIndex( repo => repo.id === repoId );
+    
+    if(index < 0) return false;
+    return this.state.repositories[index].commentsFetched;
+  }
+
   render() {
     return (
       <div className="App">
         <SearchBar query={this.state.query} onChange={this.handleInputChange}/>
         <Divider/>
-        <Repositories onClickRepo={this.handleClickRepo} repos={this.state.repositories}/>
+        <Repositories 
+          onClickRepo={this.handleClickRepo}
+          repos={this.state.repositories}  
+        />
       </div>
     );
   }

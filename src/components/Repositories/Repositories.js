@@ -11,14 +11,16 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
+import Comments from './components/Comments/Comments';
+
 import './Repositories.scss';
 
-const SimpleList = ({ repos, onClickRepo }) => {
+const Repositories = ({ repos, onClickRepo }) => {
 
   const listItems = repos.map( repo => {
     return (
-      <li key={`${repo.name}-${repo.id}`}>
-        <ListItem button onClick={onClickRepo(repo.id)}>
+      <div key={`${repo.name}-${repo.id}`}>
+        <ListItem button onClick={onClickRepo(repo.full_name, repo.id)}>
           <ListItemIcon>
             <ArrowRight />
           </ListItemIcon>
@@ -26,16 +28,10 @@ const SimpleList = ({ repos, onClickRepo }) => {
           {repo.open ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={repo.open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem button>
-              {/* <ListItemIcon>
-              </ListItemIcon> */}
-              <ListItemText inset primary="Test" />
-            </ListItem>
-          </List>
+          <Comments items={repo.comments}/>
         </Collapse>
         <Divider/>
-      </li>
+      </div>
       
     )
   });
@@ -52,10 +48,10 @@ const SimpleList = ({ repos, onClickRepo }) => {
   );
 }
 
-SimpleList.propTypes = {
+Repositories.propTypes = {
   repos: PropTypes.array.isRequired,
   onClickRepo: PropTypes.func.isRequired,
 };
 
 
-export default SimpleList;
+export default Repositories;
