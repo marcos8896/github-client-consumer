@@ -29,19 +29,22 @@ class App extends Component {
 
 
   async getRepositoriesByQuery( query ) {
+    
     const url = 'search/repositories';
 
-    try {
+    if(query !== '') {
+      try {
 
         const response = await axios.get( url, { params: {
           q: query,
           order: 'desc'
-        }})
+        }});
       
         this.setState({ repositories:response.data.items });
-        
-    } catch ( err ) {
-      console.error('err: ', err);
+          
+      } catch ( err ) {
+        console.error('err: ', err);
+      }
     }
 
   }
