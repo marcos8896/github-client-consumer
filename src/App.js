@@ -14,46 +14,43 @@ class App extends Component {
 
     super( props );
     this.state = {
-      query: '',
       repositories: [],
       currentComments: [],
     }
 
-    this.getRepositoriesByQuery = debounce( this.getRepositoriesByQuery.bind(this), 500);
+    this.getRepositoriesByQuery = debounce( this.getRepositoriesByQuery.bind(this), 800);
   }
 
 
-  componentDidUpdate( prevProps ) {
-    if(prevProps.query !== this.state.query) this.getRepositoriesByQuery();
-  }
-
-
-  handleChange = ( event ) => {
-    const name = event.target.name;
+  handleInputChange = ( event ) => {
     const value = event.target.value;
-    this.setState({ [name]: value });
+    this.getRepositoriesByQuery(value);
   }
 
 
-  async getRepositoriesByQuery() {
-    //https://api.github.com/search/repositories?q=react&order=desc
-    // const url = 'search/repositories';
+  async getRepositoriesByQuery( query ) {
+    
+    const url = 'search/repositories';
 
-    // const response = await axios.get( url, {
-    //   params: {
-    //     q: query,
-    //     order: 'desc'
-    //   }
-    // }).catch( err => console.err(err));
+    try {
 
-    // console.log('response: ', response);
-  
+        const response = await axios.get( url, { params: {
+          q: query,
+          order: 'desc'
+        }})
+        
+        this.setState({ repositories:response.data.items });
+        
+    } catch ( err ) {
+      console.error('err: ', err);
+    }
+
   }
 
   render() {
     return (
       <div className="App">
-        <SearchBar query={this.state.query} onChange={this.handleChange}/>
+        <SearchBar query={this.state.query} onChange={this.handleInputChange}/>
         <Divider/>
         <Repositories/>
       </div>
