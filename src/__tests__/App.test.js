@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitForElement, fireEvent, wait } from 'react-testing-library';
+import { render, waitForElement, fireEvent } from 'react-testing-library';
 
 import mockAxios from 'axios';
 
@@ -7,6 +7,8 @@ import App from '../App';
 
 import repositoriesData from './testRepositoriesData.json';
 import testCommentsData from './testCommentsData.json';
+
+jest.mock( 'lodash.debounce', () => jest.fn( ( fn ) => fn ) );
 
 const setup = () => {
   return {
@@ -38,7 +40,7 @@ it('should render a list with several repositories when searching', async () => 
   fireEvent.change( searchNode, { target: { value: 'react' } });
   await waitForElement( () => getByText( 'freeCodeCamp/freeCodeCamp' ) );
 
-  
+
   expect( getByText( 'freeCodeCamp/freeCodeCamp' ) ).toBeInTheDocument();
   expect( getByText( 'facebook/react' ) ).toBeInTheDocument();
 
